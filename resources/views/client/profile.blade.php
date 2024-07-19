@@ -15,13 +15,12 @@
 			</div>
 			<div class="col-md-8 col-lg-6 text-center text-md-left">
 				<h3 class="mb-2">{{ $user->name }}</h2>
-					<strong class="mb-2 d-block">Author</strong>
 					<div class="content">
 						<p>{{ $user->short_des }}</p>
 
 					</div>
 
-					<a class="post-count mb-1" href="{{ route('account.create') }}"><i class="ti-pencil-alt mr-2"></i>Trở thành tác giả</a>
+					<a class="post-count mb-1" href="{{ route('author.index') }}"><i class="ti-pencil-alt mr-2"></i>Trở thành tác giả</a>
 					<ul class="list-inline social-icons">
 
 						<li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>

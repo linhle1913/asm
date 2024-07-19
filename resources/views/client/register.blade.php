@@ -9,15 +9,7 @@
     </head>
     <body class="bg-light">
         <div class="container-fluid shadow-lg header">
-            <div class="container">
-                <div class="d-flex justify-content-between">
-                    <h1 class="text-center"><a href="{{ route('home') }}" class="h3 text-white text-decoration-none">Reader</a></h1>
-                    <div class="d-flex align-items-center navigation">
-                        <a href="login.html" class="text-white">Đăng nhập</a>
-                        <a href="register.html" class="text-white ps-2">Đăng nhập</a>
-                    </div>
-                </div>
-            </div>
+            @include('client.author.layout.header')
         </div>
         <section class=" p-3 p-md-4 p-xl-5">
             <div class="container">

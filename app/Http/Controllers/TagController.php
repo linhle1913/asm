@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
@@ -20,7 +21,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -28,7 +29,29 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = Validator::make($request->all(),[
+            'name' => 'required|min:3|unique:tags'
+        ]);
+
+        if($validation->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validation->errors()
+            ]);
+        }else{
+            $tag = new Tag();
+            $tag->create([
+                'name' => $request->name,
+                'slug' => \Str::slug($request->name)
+            ]);
+
+            session()->flash('success', 'Bạn đã thêm thẻ mới thành công!');
+            return response()->json([
+                'status' => true,
+                'errors' => []
+            ]);
+
+        }
     }
 
     /**

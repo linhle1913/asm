@@ -3,21 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login</title>
-        <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/login-theme/css/style.css">
+        <title>@yield('title')</title>
+        @include('client.author.layout.css')
     </head>
     <body class="bg-light">
         <div class="container-fluid shadow-lg header">
-            <div class="container">
-                <div class="d-flex justify-content-between">
-                    <h1 class="text-center"><a href="{{ route('home') }}" class="h3 text-white text-decoration-none">Reader</a></h1>
-                    <div class="d-flex align-items-center navigation">
-                        <a href="{{ Route('account.login') }}" class="text-white">Đăng nhập</a>
-                    <a href="{{ Route('account.register') }}" class="text-white ps-2">Đăng kí</a>
-                    </div>
-                </div>
-            </div>
+            @include('client.author.layout.header')
         </div>
         <section class=" p-3 p-md-4 p-xl-5">
             <div class="container">
