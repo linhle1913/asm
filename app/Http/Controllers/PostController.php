@@ -16,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderBy('title', 'ASC')->paginate(10);
+        $posts = Post::orderBy('title', 'ASC')->where('user_id', Auth::user()->id)->paginate(10);
         return view('client.author.list', [
             'posts' => $posts
         ]);
@@ -56,24 +56,19 @@ class PostController extends Controller
         $post->slug = \Str::slug($request->title);
         $post->save();
 
-        if(!empty($request->thumbnail)){
+        if (!empty($request->thumbnail)) {
             $image = $request->thumbnail;
             $ext = $image->getClientOriginalExtension();
-            $imageName = time().'.'.$ext;
-            $image->move(public_path('uploads/post'),$imageName);
+            $imageName = time() . '.' . $ext;
+            $image->move(public_path('uploads/post'), $imageName);
             $post->thumbnail = $imageName;
             $post->save();
         }
 
-        $postId = $post->id;
 
         foreach ($request->tag as $tag) {
             $tag_id = explode(',', $tag);
-            $tags = last($tag_id);
-            $tag_post = new Tag_Post();
-            $tag_post->tag_id = $tags;
-            $tag_post->post_id = $postId;
-            $tag_post->save();
+            $post->Tags()->attach($tag_id);
         }
 
         return redirect()->route('author.index')->with('success', 'Bài viết của bạn đã đăng thành công. Bài viết bạn sẽ được duyệt trong thời gian tới.');
@@ -84,62 +79,51 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = Post::find($id);
-        $tag = Tag::orderBy('name', 'ASC')->where('is_active', 0)->get();
-        $tag_post = Tag_Post::where('post_id', $id)->get('tag_id');
-        return view('client.author.edit', [
-            'post' => $post,
-            'tag' => $tag,
-            'tag_post' => $tag_post
-        ]);
+        $tags = Tag::all();
+        $post = Post::with('Tags')->findOrFail($id);
+        return view('client.author.edit', compact(['post', 'tags']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, Request $request, Post $post)
+    public function update($id, Request $request)
     {
-        $post = Post::find($id);
-        $tag_post = Tag_Post::where('post_id', $id);
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:5',
             'tag' => 'required|min:1',
-            'content' => 'required'
+            'content' => 'required',
+            'thumbnail' => 'image'
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('author.create')->withInput()->withErrors($validator);
-        };
+            return redirect()->route('author.edit', $id)->withInput()->withErrors($validator);
+        }
+
+        $post = Post::findOrFail($id);
 
         $post->title = $request->title;
         $post->content = $request->content;
-        $post->user_id = Auth::user()->id;
         $post->slug = \Str::slug($request->title);
         $post->save();
 
-        $postId = $post->id;
+        if ($request->hasFile('thumbnail')) {
+            if ($post->thumbnail && file_exists(public_path('uploads/post/' . $post->thumbnail))) {
+                unlink(public_path('uploads/post/' . $post->thumbnail));
+            }
 
-        if ($request->tag == $tag_post) {
-            foreach ($request->tag as $tag) {
-                $tag_id = explode(',', $tag);
-                $tags = last($tag_id);
-                $tag_post = new Tag_Post();
-                $tag_post->tag_id = $tags;
-                $tag_post->post_id = $postId;
-                $tag_post->save();
-            }
-        } else {
-            foreach ($request->tag as $tag) {
-                $tag_id = explode(',', $tag);
-                $tags = last($tag_id);
-                $tag_post->tag_id = $tags;
-                $tag_post->post_id = $postId;
-                $tag_post->save();
-            }
+            $image = $request->thumbnail;
+            $ext = $image->getClientOriginalExtension();
+            $imageName = time() . '.' . $ext;
+            $image->move(public_path('uploads/post'), $imageName);
+            $post->thumbnail = $imageName;
+            $post->save();
         }
 
 
-        return redirect()->route('author.index')->with('success', 'Bài viết của bạn đã đăng thành công. Bài viết bạn sẽ được duyệt trong thời gian tới.');
+        $post->tags()->sync($request->tag);
+
+        return back()->with('success', 'Bài viết của bạn đã được cập nhật thành công.');
     }
 
     /**
@@ -147,7 +131,11 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if ($post->thumbnail && file_exists(public_path('uploads/post/') . $post->thumbnail)) {
+            unlink(public_path('uploads/post/') . $post->thumbnail);
+        }
+        $post->delete();
+        return response()->json(['message' => 'Bài viết đã được xóa thành công.'], 200);
     }
 }
 

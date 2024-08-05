@@ -17,11 +17,11 @@ class Post extends Model
         'content'
     ];
 
-    public function product_user(): HasOne{
-        return $this->hasOne(User::class,'user_id');
+    public function author(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function Tag(){
-        return $this->hasMany(Tag_Post::class);
+    public function Tags(){
+        return $this->belongsToMany(Tag::class);
     }
 }

@@ -6,8 +6,8 @@
         <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="{{ route('home') }}" role="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
+                    <a class="nav-link" href="{{ route('home') }}" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
                         Trang chủ
                     </a>
                 </li>
@@ -30,21 +30,20 @@
 
         <div class="order-2 order-lg-3 d-flex align-items-center">
             <!-- search -->
-            <form class="search-bar">
-                <input id="search-query" name="s" type="search" placeholder="Type &amp; Hit Enter...">
+            <form class="search-bar" action="{{ route('search') }}" method="GET">
+                <input id="search-query" name="query" type="search" placeholder="Tìm kiếm theo tên hoặc thẻ">
+                <button class="navbar-toggler border-0 order-1" type="submit" data-toggle="collapse"
+                    data-target="#navigation">
+                    <i class="ti-menu"></i>
+                </button>
             </form>
-
-            <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse"
-                data-target="#navigation">
-                <i class="ti-menu"></i>
-            </button>
             <div>
-                @if (Auth::check())
-                <a href="{{ route('account.profile') }}" class="btn btn-success">Tài khoản</a>
-                <a href="{{ route('account.logout') }}" class="btn btn-light">Đăng xuất</a>
+                @if (Auth::check() && Auth::user()->role == 0)
+                    <a href="{{ route('account.profile') }}" class="btn btn-success">Tài khoản</a>
+                    <a href="{{ route('account.logout') }}" class="btn btn-light">Đăng xuất</a>
                 @else
-                <a href="{{ Route('account.login') }}" class="btn btn-success">Đăng nhập</a>
-                <a href="{{ route('account.register') }}" class="btn btn-light">Đăng kí</a>
+                    <a href="{{ Route('account.login') }}" class="btn btn-success">Đăng nhập</a>
+                    <a href="{{ route('account.register') }}" class="btn btn-light">Đăng kí</a>
                 @endif
             </div>
         </div>

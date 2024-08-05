@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@yield('title')</title>
+        <title>Đăng nhập</title>
         @include('client.author.layout.css')
     </head>
     <body class="bg-light">
@@ -50,6 +50,7 @@
                                             <div class="form-floating mb-3">
                                                 <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="password" value="" placeholder="Password">
                                                 <label for="password" class="form-label">Mật khẩu</label>
+                                                <a href="{{ Route('account.forgot') }}" class="link-secondary text-decoration-none">Quên mật khẩu</a>
                                                 @error('password')
                                                 <p class="invalid-feedback">{{ $message }}</p>
                                                 @enderror

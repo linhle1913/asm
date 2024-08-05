@@ -15,8 +15,9 @@
             </div>
         @endif
         <div class="card-body">
-            <form action="{{ route('author.update',$post->id) }}" id="postForm" name="postForm">
+            <form action="{{ route('author.update', $post->id) }}" id="postForm" name="postForm" method="POST" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 <div class="mb-3">
                     <label for="title" class="form-label">Tiêu đề</label>
                     <input type="text" class="form-control @error('title') is-invalid @enderror" placeholder="Tiêu đề"
@@ -28,7 +29,8 @@
 
                 <div class="mb-3">
                     <label for="Image" class="form-label">Thumbnail</label>
-                    <input type="file" class="form-control" name="image" id="image" />
+                    <input type="file" class="form-control" name="thumbnail" id="thumbnail" />
+                    <img src="/uploads/post/{{ $post->thumbnail }}" alt="" class="img-thumbnail">
                 </div>
                 <div class="mb-3">
                     <label for="author" class="form-label">Nội dung</label>
@@ -48,10 +50,9 @@
                     </button>
                     <select class="form-select @error('tag') is-invalid @enderror" id="multiple-select-field"
                         data-placeholder="Choose anything" multiple name="tag[]">
-                        @foreach ($tag as $tag)
-                            @foreach ($tag_post as $tags)
-                            <option value="{{ $tag->id }}" {{ $tag->id == $tags->tag_id ? 'selected' : '' }}>{{ $tag->name }}</option>
-                            @endforeach
+                        @foreach ($tags as $tag)
+                            <option value="{{ $tag->id }}" @if ($post->Tags->contains($tag->id)) selected @endif>
+                                {{ $tag->name }}</option>
                         @endforeach
                     </select>
                     @error('tag')
@@ -59,6 +60,7 @@
                     @enderror
                     <div class="mb-3">
                         <button class="btn btn-primary mt-2" type="submit">Sửa</button>
+                        <a href="{{ route('author.index') }}">Quay lại</a>
                     </div>
                 </div>
             </form>
@@ -100,7 +102,7 @@
                             .siblings('p')
                             .addClass('invalid-feedback').
                         html('')
-                        window.location.href = "{{ route('author.create') }}"
+                        window.location.reload();
                     } else {
                         var errors = response.errors;
                         if (errors.name) {

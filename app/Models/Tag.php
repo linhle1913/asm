@@ -14,4 +14,8 @@ class Tag extends Model
         'slug',
         'is_active'
     ];
+
+    public function Posts(){
+        return $this->belongsToMany(Post::class);
+    }
 }

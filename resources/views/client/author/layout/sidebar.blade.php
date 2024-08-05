@@ -5,7 +5,7 @@
         </div>
         <div class="card-body">
             <div class="text-center mb-3">
-                <img src="images/profile-img-1.jpg" class="img-fluid rounded-circle" alt="Luna John">
+                <img src="/uploads/avatar/{{ Auth::user()->image }}" class="img-fluid rounded-circle">
             </div>
             <div class="h5 text-center">
                 <strong>{{ Auth::user()->name }}</strong>
@@ -16,10 +16,10 @@
         <div class="card-body sidebar">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="book-listing.html">Danh sách bài viết</a>
+                    <a href="{{ route('author.editProfile') }}">Thay đổi thông tin của bạn</a>
                 </li>
                 <li class="nav-item">
-                    <a href="reviews.html">Thẻ</a>
+                    <a href="{{ route('author.index') }}">Danh sách bài viết</a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('home') }}">Về lại trang người đọc</a>
